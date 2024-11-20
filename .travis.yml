@@ -1,0 +1,18 @@
+#language: generic
+# if build fails with "rakefile not found" error
+sudo: required
+services:
+  - docker
+
+before_install:
+  - cd correct_complex
+  - docker build -t ljinan/crt-complex-react -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CT=true ljinan/react-test npm test -- --watchAll=false
+
+after_success:
+  - docker build -t ljinan/crt-complex-client ./client
+  - docker build -t ljinan/crt-complex-nginx ./nginx
+  - docker build -t ljinan/crt-complex-server ./server
+  - docker build -t ljinan/crt-complex-worker ./worker
