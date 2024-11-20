@@ -12,7 +12,15 @@ script:
   - docker run -e CT=true ljinan/react-test npm test -- --watchAll=false
 
 after_success:
-  - docker build -t ljinan/crt-complex-client ./client
-  - docker build -t ljinan/crt-complex-nginx ./nginx
-  - docker build -t ljinan/crt-complex-server ./server
-  - docker build -t ljinan/crt-complex-worker ./worker
+  - docker build -t ljinan/multi-client ./client
+  - docker build -t ljinan/multi-nginx ./nginx
+  - docker build -t ljinan/multi-server ./server
+  - docker build -t ljinan/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # echo the docker password and pass it to the docker login command through stdin
+  # Take those images and push them to docker hub
+  - docker push ljinan/multi-client
+  - docker push ljinan/multi-nginx
+  - docker push ljinan/multi-server
+  - docker push ljinan/multi-worker
