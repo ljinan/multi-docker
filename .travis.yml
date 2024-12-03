@@ -24,3 +24,16 @@ after_success:
   - docker push ljinan/multi-nginx
   - docker push ljinan/multi-server
   - docker push ljinan/multi-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: ap-southeast-1
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name:  #search from the S3 buckets
+    bucket_path: docker-multi
+    on:
+      branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+      secure: $AWS_SECRET_KEY 

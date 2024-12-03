@@ -1,0 +1,48 @@
+# Dockerrun.aws.json file must be in json syntax!!
+# use a json validator to verify your json file such as https://jsonlint.com/
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "ljinan/multi-client",
+            "hostname": "client",
+            "essential": false
+            # essential = false is default value and means if this container crashes, it will not bring down the entire group of containers
+            # if essential = true container close down, all other containers within the group will close down as well.
+            # it is compulsory to make 1 container within the group of container to be essential
+        },
+        {
+            "name": "server",
+            "image": "ljinan/multi-server",
+            "hostname": "api",
+            # hostname must follow what you named within the docker-compose.yml file
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "ljinan/multi-worker",
+            "honstname": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "ljinan/multi-nginx",
+            "hostname": "nginx",
+            #hostname is not a compulsory field. If no other service needs to directly access the service, there is no need to put the hostname
+            "essential": true
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["client", "server"]
+            # when coming to ECS, we need to specify more distinct links between the containers
+            # we know that nginx needs to send traffic / redirect request to either client or API
+            # want to make sure that nginx knows the other 2 containers exist, by forming up a link between them
+            # links are unidirectional
+            # whatever is specified in the link needs to match up to the name of the other services container specified above
+        }
+    ]
+}
