@@ -11,19 +11,23 @@
             # essential = false is default value and means if this container crashes, it will not bring down the entire group of containers
             # if essential = true container close down, all other containers within the group will close down as well.
             # it is compulsory to make 1 container within the group of container to be essential
+            "memory": 128
+            # 128 MB, for personal projects, research the traditional amount of memory required by the application
         },
         {
             "name": "server",
             "image": "ljinan/multi-server",
             "hostname": "api",
             # hostname must follow what you named within the docker-compose.yml file
-            "essential": false
+            "essential": false,
+            "memory": 128
         },
         {
             "name": "worker",
             "image": "ljinan/multi-worker",
             "honstname": "worker",
-            "essential": false
+            "essential": false,
+            "memory": 128
         },
         {
             "name": "nginx",
@@ -37,12 +41,13 @@
                     "containerPort": 80
                 }
             ],
-            "links": ["client", "server"]
+            "links": ["client", "server"],
             # when coming to ECS, we need to specify more distinct links between the containers
             # we know that nginx needs to send traffic / redirect request to either client or API
             # want to make sure that nginx knows the other 2 containers exist, by forming up a link between them
             # links are unidirectional
             # whatever is specified in the link needs to match up to the name of the other services container specified above
+            "memory": 128
         }
     ]
 }
